@@ -263,14 +263,14 @@ class CacheTests(TestCase):
 
     def test_cache(self):
         """Кэширование работает."""
-        text = self.post.text
+        content_start = self.client.get(reverse('posts:index')).content
         Post.objects.filter(author=self.user).delete()
         self.assertFalse(Post.objects.filter(author=self.user).exists())
-        self.assertContains(self.client.get(reverse('posts:index')),
-                            text)
+        content_cache = self.client.get(reverse('posts:index')).content
+        self.assertEqual(content_start, content_cache)
         cache.clear()
-        self.assertNotContains(self.client.get(reverse('posts:index')),
-                               text)
+        content_end = self.client.get(reverse('posts:index')).content
+        self.assertNotEqual(content_start, content_end)
 
 
 class FollowTests(TestCase):
