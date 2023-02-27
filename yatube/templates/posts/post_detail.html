@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% block title %} Пост {{ post.text|truncatechars:30 }} {% endblock %}
+
+{% block content %}
+      <div class="container py-5">
+        {% include 'includes/post.html' %}
+      </div> 
+      <div class="container py-5">
+        {% include 'includes/comments.html' %}
+      </div> 
+{% endblock %} 
