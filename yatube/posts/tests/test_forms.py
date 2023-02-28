@@ -65,6 +65,8 @@ class PostFormTests(TestCase):
         )
 
         self.assertEqual(Post.objects.count(), posts_count + 1)
+        self.assertEqual(Post.objects.get(pk=1).image.name.split('/')[-1],
+                         uploaded.name)
         self.assertTrue(
             Post.objects.filter(
                 text=form_data['text'],

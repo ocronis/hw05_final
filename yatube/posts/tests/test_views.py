@@ -287,16 +287,26 @@ class FollowTests(TestCase):
 
     def test_follow_create(self):
         """Авторизованный пользователь может подписываться на других
-        пользователей и удалять их из подписок."""
-        follow_count = Follow.objects.count()
+        пользователей."""
         self.authorized_client.get(
             reverse('posts:profile_follow',
                     kwargs={'username': self.author_user.username}))
-        self.assertEqual(Follow.objects.count(), follow_count + 1)
+        self.assertTrue(
+            Follow.objects.filter(user=self.follower_user,
+                                  author=self.author_user).exists())
+
+    def test_follow_delete(self):
+        """Авторизованный пользователь может удалять других
+        пользователей из подписок."""
+        self.authorized_client.get(
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.author_user.username}))
         self.authorized_client.get(
             reverse('posts:profile_unfollow',
                     kwargs={'username': self.author_user.username}))
-        self.assertEqual(Follow.objects.count(), follow_count)
+        self.assertFalse(
+            Follow.objects.filter(user=self.follower_user,
+                                  author=self.author_user).exists())
 
     def test_follow_post(self):
         """Новая запись пользователя появляется в ленте тех, кто на него

@@ -21,7 +21,8 @@ def get_page_obj(request, post_list):
 @cache_page(20, key_prefix='index_cache')
 def index(request):
     template = 'posts/index.html'
-    post_list = Post.objects.all().order_by('-pub_date')
+    post_list = (
+        Post.objects.select_related('group').all().order_by('-pub_date'))
     page_obj = get_page_obj(request, post_list)
     context = {
         'page_obj': page_obj,
@@ -143,9 +144,7 @@ def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
     if author == request.user:
         return redirect('posts:profile', username=request.user.username)
-    elif Follow.objects.filter(user=request.user, author=author).exists():
-        return redirect('posts:profile', username=request.user.username)
-    Follow.objects.create(
+    Follow.objects.get_or_create(
         user=request.user,
         author=author
     )
