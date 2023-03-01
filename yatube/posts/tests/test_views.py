@@ -298,9 +298,7 @@ class FollowTests(TestCase):
     def test_follow_delete(self):
         """Авторизованный пользователь может удалять других
         пользователей из подписок."""
-        self.authorized_client.get(
-            reverse('posts:profile_follow',
-                    kwargs={'username': self.author_user.username}))
+        Follow.objects.create(user=self.follower_user, author=self.author_user)
         self.authorized_client.get(
             reverse('posts:profile_unfollow',
                     kwargs={'username': self.author_user.username}))
