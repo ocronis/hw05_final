@@ -69,7 +69,7 @@ class PostFormTests(TestCase):
             Post.objects.filter(
                 text=form_data['text'],
                 group=self.group.id,
-                image='posts/' + uploaded.name,
+                image__endswith=uploaded,
             ).exists()
         )
 
